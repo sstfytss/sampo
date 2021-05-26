@@ -17,6 +17,7 @@
 		8F3A52AD2659F82F00154CFC /* sampoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3A52AC2659F82F00154CFC /* sampoUITests.swift */; };
 		8F3A52C2265A3AC800154CFC /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3A52C1265A3AC800154CFC /* HomeViewController.swift */; };
 		8F3A52C6265A3BA700154CFC /* MyRouteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3A52C5265A3BA700154CFC /* MyRouteCell.swift */; };
+		8F3B7103265EAFD2009BDBE5 /* SelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3B7102265EAFD1009BDBE5 /* SelectViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		8F3A52AE2659F82F00154CFC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F3A52C1265A3AC800154CFC /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8F3A52C5265A3BA700154CFC /* MyRouteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRouteCell.swift; sourceTree = "<group>"; };
+		8F3B7102265EAFD1009BDBE5 /* SelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 				8F3A528C2659F82E00154CFC /* SceneDelegate.swift */,
 				8F3A528E2659F82E00154CFC /* ViewController.swift */,
 				8F3A52902659F82E00154CFC /* Main.storyboard */,
+				8F3B7102265EAFD1009BDBE5 /* SelectViewController.swift */,
 				8F3A52932659F82F00154CFC /* Assets.xcassets */,
 				8F3A52952659F82F00154CFC /* LaunchScreen.storyboard */,
 				8F3A52982659F82F00154CFC /* Info.plist */,
@@ -268,6 +271,7 @@
 				8F3A528F2659F82E00154CFC /* ViewController.swift in Sources */,
 				8F3A528B2659F82E00154CFC /* AppDelegate.swift in Sources */,
 				8F3A528D2659F82E00154CFC /* SceneDelegate.swift in Sources */,
+				8F3B7103265EAFD2009BDBE5 /* SelectViewController.swift in Sources */,
 				8F3A52C2265A3AC800154CFC /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
