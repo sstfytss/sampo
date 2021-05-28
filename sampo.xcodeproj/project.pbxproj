@@ -18,6 +18,8 @@
 		8F3A52C2265A3AC800154CFC /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3A52C1265A3AC800154CFC /* HomeViewController.swift */; };
 		8F3A52C6265A3BA700154CFC /* MyRouteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3A52C5265A3BA700154CFC /* MyRouteCell.swift */; };
 		8F3B7103265EAFD2009BDBE5 /* SelectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3B7102265EAFD1009BDBE5 /* SelectViewController.swift */; };
+		8F3B7105265F4CCB009BDBE5 /* Annotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3B7104265F4CCB009BDBE5 /* Annotation.swift */; };
+		8F3B710A265F58CE009BDBE5 /* Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3B7108265F589F009BDBE5 /* Place.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +57,8 @@
 		8F3A52C1265A3AC800154CFC /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		8F3A52C5265A3BA700154CFC /* MyRouteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRouteCell.swift; sourceTree = "<group>"; };
 		8F3B7102265EAFD1009BDBE5 /* SelectViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectViewController.swift; sourceTree = "<group>"; };
+		8F3B7104265F4CCB009BDBE5 /* Annotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Annotation.swift; sourceTree = "<group>"; };
+		8F3B7108265F589F009BDBE5 /* Place.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Place.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,12 +113,11 @@
 				8F3A528C2659F82E00154CFC /* SceneDelegate.swift */,
 				8F3A528E2659F82E00154CFC /* ViewController.swift */,
 				8F3A52902659F82E00154CFC /* Main.storyboard */,
-				8F3B7102265EAFD1009BDBE5 /* SelectViewController.swift */,
+				8F3B7107265F4CF9009BDBE5 /* Model */,
+				8F3B7106265F4CD5009BDBE5 /* Controller */,
 				8F3A52932659F82F00154CFC /* Assets.xcassets */,
 				8F3A52952659F82F00154CFC /* LaunchScreen.storyboard */,
 				8F3A52982659F82F00154CFC /* Info.plist */,
-				8F3A52C1265A3AC800154CFC /* HomeViewController.swift */,
-				8F3A52C5265A3BA700154CFC /* MyRouteCell.swift */,
 			);
 			path = sampo;
 			sourceTree = "<group>";
@@ -135,6 +138,25 @@
 				8F3A52AE2659F82F00154CFC /* Info.plist */,
 			);
 			path = sampoUITests;
+			sourceTree = "<group>";
+		};
+		8F3B7106265F4CD5009BDBE5 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				8F3A52C1265A3AC800154CFC /* HomeViewController.swift */,
+				8F3B7102265EAFD1009BDBE5 /* SelectViewController.swift */,
+				8F3A52C5265A3BA700154CFC /* MyRouteCell.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		8F3B7107265F4CF9009BDBE5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				8F3B7104265F4CCB009BDBE5 /* Annotation.swift */,
+				8F3B7108265F589F009BDBE5 /* Place.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,8 +292,10 @@
 				8F3A52C6265A3BA700154CFC /* MyRouteCell.swift in Sources */,
 				8F3A528F2659F82E00154CFC /* ViewController.swift in Sources */,
 				8F3A528B2659F82E00154CFC /* AppDelegate.swift in Sources */,
+				8F3B710A265F58CE009BDBE5 /* Place.swift in Sources */,
 				8F3A528D2659F82E00154CFC /* SceneDelegate.swift in Sources */,
 				8F3B7103265EAFD2009BDBE5 /* SelectViewController.swift in Sources */,
+				8F3B7105265F4CCB009BDBE5 /* Annotation.swift in Sources */,
 				8F3A52C2265A3AC800154CFC /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -378,7 +402,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -433,7 +457,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
