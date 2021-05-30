@@ -8,14 +8,16 @@
 import UIKit
 import MapKit
 import CoreLocation
+import HDAugmentedReality
 
-class SelectViewController: UIViewController {
-    
+class SelectViewController: UIViewController{
     @IBOutlet weak var mapView: MKMapView!
     
     fileprivate let locationManager = CLLocationManager()
     fileprivate var startedLoadingPOIs = false
     fileprivate var placesArray = [Place]()
+    fileprivate var annotationArray = [Annotation]()
+    fileprivate var arViewController: ARViewController!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,27 +28,26 @@ class SelectViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         
         placesArray = [Place(x: 35.6607081, y: 139.6651037), Place(x: 35.6605384, y: 139.6646573)]
-
-//        let initialLocation = CLLocation(latitude: 21.282778, longitude: -157.829444)
-//        mapView.centerToLocation(initialLocation)
     }
     
     func setupLocation(){
         
     }
+    
+//    @IBAction func showARController(_ sender: Any){
+//        arViewController = ARViewController()
+//        //1
+//        arViewController.dataSource = self
+//        //2
+////        arViewController.maxVisibleAnnotations = 30
+////        arViewController.headingSmoothingFactor = 0.05
+////        //3
+////        arViewController.setAnnotations(annotationArray)
+//            
+//        self.present(arViewController, animated: true, completion: nil)
+//    }
 
 }
-
-//private extension MKMapView {
-//    
-//    func centerToLocation(_ location: CLLocation, regionRadius: CLLocationDistance = 1000) {
-//        let coordinateRegion = MKCoordinateRegion(
-//            center: location.coordinate,
-//            latitudinalMeters: regionRadius,
-//            longitudinalMeters: regionRadius)
-//          setRegion(coordinateRegion, animated: true)
-//    }
-//}
 
 extension SelectViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -71,6 +72,7 @@ extension SelectViewController: CLLocationManagerDelegate {
                         guard let longitude = place.y else { return }
 
                         let annotation = Annotation(location: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), title: "place.placeName")
+                        annotationArray.append(annotation)
                         DispatchQueue.main.async {
                             self.mapView.addAnnotation(annotation)
                         }
@@ -81,3 +83,21 @@ extension SelectViewController: CLLocationManagerDelegate {
     }
     
 }
+
+//extension SelectViewController: ARDataSource {
+//
+//  func ar(_ arViewController: ARViewController, viewForAnnotation: ARAnnotation) -> ARAnnotationView {
+//    let annotationView = AnnotationView()
+//    annotationView.annotation = viewForAnnotation
+//    annotationView.delegate = self
+//    annotationView.frame = CGRect(x: 0, y: 0, width: 150, height: 50)
+//    
+//    return annotationView
+//  }
+//}
+//
+//extension SelectViewController: AnnotationViewDelegate {
+//  func didTouch(annotationView: AnnotationView) {
+//    print("Tapped view for POI: \(annotationView.titleLabel?.text)")
+//  }
+//}
