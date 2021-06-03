@@ -10,7 +10,7 @@ import MapKit
 import CoreLocation
 import HDAugmentedReality
 
-class SelectViewController: UIViewController{
+class SelectViewController: UIViewController, MKMapViewDelegate{
     @IBOutlet weak var mapView: MKMapView!
     
     fileprivate let locationManager = CLLocationManager()
@@ -18,9 +18,17 @@ class SelectViewController: UIViewController{
     fileprivate var placesArray = [Place]()
     fileprivate var annotationArray = [Annotation]()
     fileprivate var arViewController: ARViewController!
+    var coordinates: [CLLocationCoordinate2D] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
+        coordinates.append(CLLocationCoordinate2D(latitude: 35.65986915, longitude: 139.6638398))
+        coordinates.append(CLLocationCoordinate2D(latitude: 35.6600031, longitude: 139.6642768))
+        coordinates.append(CLLocationCoordinate2D(latitude: 35.6601289, longitude: 139.6646483))
+        let polyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
+        //UserDefaults.standard.setValue(polyline, forKey: "polyline")
+        mapView.addOverlay(polyline)
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
@@ -80,6 +88,18 @@ extension SelectViewController: CLLocationManagerDelegate {
                 }
             }
         }
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+
+        if let routePolyline = overlay as? MKPolyline {
+            let renderer = MKPolylineRenderer(polyline: routePolyline)
+            renderer.strokeColor = UIColor.blue.withAlphaComponent(0.9)
+            renderer.lineWidth = 7
+            return renderer
+        }
+
+        return MKOverlayRenderer()
     }
     
 }

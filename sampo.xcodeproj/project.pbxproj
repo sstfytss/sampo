@@ -24,6 +24,9 @@
 		8F3B710A265F58CE009BDBE5 /* Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3B7108265F589F009BDBE5 /* Place.swift */; };
 		8F3B710C26636CFC009BDBE5 /* AnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3B710B26636CFC009BDBE5 /* AnnotationView.swift */; };
 		8F3B710E266385EE009BDBE5 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3B710D266385EE009BDBE5 /* ARViewController.swift */; };
+		8F3F92CD266783310088666A /* TrackingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3F92CC266783310088666A /* TrackingViewController.swift */; };
+		8F3F92CF2667B0B30088666A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8F3F92CE2667B0B30088666A /* GoogleService-Info.plist */; };
+		8F3F92D12668B69D0088666A /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3F92D02668B69D0088666A /* SignInViewController.swift */; };
 		F345DC0747744248D6537F23 /* Pods_sampo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B52FE007A0D225205EA80C7A /* Pods_sampo.framework */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +74,9 @@
 		8F3B7108265F589F009BDBE5 /* Place.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Place.swift; sourceTree = "<group>"; };
 		8F3B710B26636CFC009BDBE5 /* AnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationView.swift; sourceTree = "<group>"; };
 		8F3B710D266385EE009BDBE5 /* ARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
+		8F3F92CC266783310088666A /* TrackingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingViewController.swift; sourceTree = "<group>"; };
+		8F3F92CE2667B0B30088666A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8F3F92D02668B69D0088666A /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		95CC09632BC037BC8CA71E2D /* Pods-sampo-sampoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sampo-sampoUITests.release.xcconfig"; path = "Target Support Files/Pods-sampo-sampoUITests/Pods-sampo-sampoUITests.release.xcconfig"; sourceTree = "<group>"; };
 		A944F1D63CC10DAB035D6520 /* Pods-sampo-sampoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sampo-sampoUITests.debug.xcconfig"; path = "Target Support Files/Pods-sampo-sampoUITests/Pods-sampo-sampoUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		B52FE007A0D225205EA80C7A /* Pods_sampo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sampo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,12 +153,12 @@
 				8F3A528C2659F82E00154CFC /* SceneDelegate.swift */,
 				8F3A528E2659F82E00154CFC /* ViewController.swift */,
 				8F3A52902659F82E00154CFC /* Main.storyboard */,
-				8F3B710D266385EE009BDBE5 /* ARViewController.swift */,
 				8F3B7107265F4CF9009BDBE5 /* Model */,
 				8F3B7106265F4CD5009BDBE5 /* Controller */,
 				8F3A52932659F82F00154CFC /* Assets.xcassets */,
 				8F3A52952659F82F00154CFC /* LaunchScreen.storyboard */,
 				8F3A52982659F82F00154CFC /* Info.plist */,
+				8F3F92CE2667B0B30088666A /* GoogleService-Info.plist */,
 			);
 			path = sampo;
 			sourceTree = "<group>";
@@ -178,6 +184,9 @@
 		8F3B7106265F4CD5009BDBE5 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				8F3B710D266385EE009BDBE5 /* ARViewController.swift */,
+				8F3F92D02668B69D0088666A /* SignInViewController.swift */,
+				8F3F92CC266783310088666A /* TrackingViewController.swift */,
 				8F3A52C1265A3AC800154CFC /* HomeViewController.swift */,
 				8F3B7102265EAFD1009BDBE5 /* SelectViewController.swift */,
 				8F3A52C5265A3BA700154CFC /* MyRouteCell.swift */,
@@ -217,6 +226,7 @@
 				8F3A52842659F82E00154CFC /* Frameworks */,
 				8F3A52852659F82E00154CFC /* Resources */,
 				CD9A6B1FB8C78828C2EF76F7 /* [CP] Embed Pods Frameworks */,
+				497EACD887FCDCD2B2D181AD /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -255,6 +265,7 @@
 				8F3A52A52659F82F00154CFC /* Frameworks */,
 				8F3A52A62659F82F00154CFC /* Resources */,
 				EC4DA6F58BAF1579870AA6C1 /* [CP] Embed Pods Frameworks */,
+				77229F3DE05EBC30481B9105 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -314,6 +325,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F3A52972659F82F00154CFC /* LaunchScreen.storyboard in Resources */,
+				8F3F92CF2667B0B30088666A /* GoogleService-Info.plist in Resources */,
 				8F3A52942659F82F00154CFC /* Assets.xcassets in Resources */,
 				8F3A52922659F82E00154CFC /* Main.storyboard in Resources */,
 			);
@@ -336,6 +348,40 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		497EACD887FCDCD2B2D181AD /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-sampo/Pods-sampo-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-sampo/Pods-sampo-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-sampo/Pods-sampo-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		77229F3DE05EBC30481B9105 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-sampo-sampoUITests/Pods-sampo-sampoUITests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-sampo-sampoUITests/Pods-sampo-sampoUITests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-sampo-sampoUITests/Pods-sampo-sampoUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		CB613A01E474F6CF952E40C6 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -445,11 +491,13 @@
 			files = (
 				8F3A52C6265A3BA700154CFC /* MyRouteCell.swift in Sources */,
 				8F3B710C26636CFC009BDBE5 /* AnnotationView.swift in Sources */,
+				8F3F92CD266783310088666A /* TrackingViewController.swift in Sources */,
 				8F3A528F2659F82E00154CFC /* ViewController.swift in Sources */,
 				8F3A528B2659F82E00154CFC /* AppDelegate.swift in Sources */,
 				8F3B710A265F58CE009BDBE5 /* Place.swift in Sources */,
 				8F3A528D2659F82E00154CFC /* SceneDelegate.swift in Sources */,
 				8F3B7103265EAFD2009BDBE5 /* SelectViewController.swift in Sources */,
+				8F3F92D12668B69D0088666A /* SignInViewController.swift in Sources */,
 				8F3B7105265F4CCB009BDBE5 /* Annotation.swift in Sources */,
 				8F3A52C2265A3AC800154CFC /* HomeViewController.swift in Sources */,
 				8F3B710E266385EE009BDBE5 /* ARViewController.swift in Sources */,
@@ -636,6 +684,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.sakai.shun.sampo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -656,6 +705,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = app.sakai.shun.sampo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

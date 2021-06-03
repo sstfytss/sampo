@@ -21,8 +21,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         myRoutes.dataSource = self
     }
     
-    
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width / 4, height: collectionView.frame.width / 4)
     }
