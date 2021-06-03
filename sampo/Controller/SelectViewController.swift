@@ -9,37 +9,89 @@ import UIKit
 import MapKit
 import CoreLocation
 import HDAugmentedReality
+import Firebase
+import FirebaseAuth
 
 class SelectViewController: UIViewController, MKMapViewDelegate{
     @IBOutlet weak var mapView: MKMapView!
+
+    let defaults = UserDefaults.standard
+    var ref: DatabaseReference!
+    var databaseHandle: DatabaseHandle!
+    var currentUser: User = Auth.auth().currentUser!
+    var coordinates: [CLLocationCoordinate2D] = []
     
     fileprivate let locationManager = CLLocationManager()
     fileprivate var startedLoadingPOIs = false
     fileprivate var placesArray = [Place]()
     fileprivate var annotationArray = [Annotation]()
     fileprivate var arViewController: ARViewController!
-    var coordinates: [CLLocationCoordinate2D] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        ref = Database.database().reference()
         mapView.delegate = self
-        coordinates.append(CLLocationCoordinate2D(latitude: 35.65986915, longitude: 139.6638398))
-        coordinates.append(CLLocationCoordinate2D(latitude: 35.6600031, longitude: 139.6642768))
-        coordinates.append(CLLocationCoordinate2D(latitude: 35.6601289, longitude: 139.6646483))
-        let polyline = MKPolyline(coordinates: coordinates, count: coordinates.count)
-        //UserDefaults.standard.setValue(polyline, forKey: "polyline")
-        mapView.addOverlay(polyline)
         
+        loadData { (x) in
+            print("xRec: \(x)")
+            self.loadData2 { (y) in
+                print("yRec: \(y)")
+                self.setData(x, y) { (coords) in
+                    let polyline = MKPolyline(coordinates: coords, count: coords.count)
+                    self.mapView.addOverlay(polyline)
+                    self.setVisibleMapArea(polyline: polyline, edgeInsets: UIEdgeInsets(top: 60.0, left: 40.0, bottom: 40.0, right: 40.0), animated: true)
+                }
+            }
+        }
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager.startUpdatingLocation()
         locationManager.requestWhenInUseAuthorization()
-        
-        placesArray = [Place(x: 35.6607081, y: 139.6651037), Place(x: 35.6605384, y: 139.6646573)]
+    }
+    
+    func loadData(completion: @escaping ([Double]) -> ()){
+        guard let rID = defaults.value(forKey: "routeSelected") as? String else { return }
+        let path = self.ref.child("Routes").child(rID)
+        var xArray: [Double] = []
+        path.child("pathX").observeSingleEvent(of: .value) { (snap) in
+            for x in snap.children.allObjects as! [DataSnapshot]{
+                let x2 = x.value as! String
+                let xDouble = (x2 as NSString).doubleValue
+                xArray.append(xDouble)
+            }
+            completion(xArray)
+        }
+    }
+    
+    func loadData2(completion: @escaping ([Double]) -> ()){
+        guard let rID = defaults.value(forKey: "routeSelected") as? String else { return }
+        let path = self.ref.child("Routes").child(rID)
+        var yArray: [Double] = []
+        path.child("pathY").observeSingleEvent(of: .value) { (snap2) in
+            for y in snap2.children.allObjects as! [DataSnapshot]{
+                let y2 = y.value as! String
+                let yDouble = (y2 as NSString).doubleValue
+                yArray.append(yDouble)
+            }
+            completion(yArray)
+        }
+    }
+    
+    func setData(_ x: [Double], _ y: [Double], completion: ([CLLocationCoordinate2D]) -> ()){
+        var coordinates2:[CLLocationCoordinate2D] = []
+        for i in 0 ..< x.count {
+            let set = CLLocationCoordinate2D(latitude: x[i], longitude: y[i])
+            coordinates2.append(set)
+        }
+        completion(coordinates2)
     }
     
     func setupLocation(){
         
+    }
+    
+    func setVisibleMapArea(polyline: MKPolyline, edgeInsets: UIEdgeInsets, animated: Bool = false) {
+        mapView.setVisibleMapRect(polyline.boundingMapRect, edgePadding: edgeInsets, animated: animated)
     }
     
 //    @IBAction func showARController(_ sender: Any){

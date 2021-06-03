@@ -6,19 +6,39 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseAuth
+import FirebaseDatabase
 
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     @IBOutlet var myRoutes: UICollectionView!
     
-    var routes: [Int] = [1, 2, 3, 4, 5]
+    var routes: [String] = []
+    var ref: DatabaseReference!
+    var databaseHandle: DatabaseHandle!
+    var currentUser: User = Auth.auth().currentUser!
+    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        myRoutes.delegate = self
-        myRoutes.dataSource = self
+        ref = Database.database().reference()
+        refresh()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.myRoutes.delegate = self
+        self.myRoutes.dataSource = self
+        self.myRoutes.reloadData()
+    }
+    
+    func refresh(){
+        self.routes = []
+        loadData {
+            self.myRoutes.delegate = self
+            self.myRoutes.dataSource = self
+            self.myRoutes.reloadData()
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -26,6 +46,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("routes: \(routes.count)")
         return routes.count
     }
     
@@ -37,5 +58,23 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let routeID = routes[indexPath.row]
+        defaults.setValue(routeID, forKey: "routeSelected")
+        self.performSegue(withIdentifier: "showRoute", sender: self)
+    }
     
+    func loadData(completion: @escaping () -> ()){
+        let path = self.ref.child("Users").child(self.currentUser.uid).child("routes")
+
+        path.observeSingleEvent(of: .value) { (r) in
+            for child in r.children.allObjects as! [DataSnapshot] {
+                let c = child.key
+                self.routes.append(c)
+                
+            }
+            print("child received: \(self.routes)")
+            completion()
+        }
+    }
 }

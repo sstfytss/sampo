@@ -338,9 +338,6 @@ best walking route</string>
                                                 <state key="normal" title="Go">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
-                                                <connections>
-                                                    <segue destination="BYZ-38-t0r" kind="presentation" modalPresentationStyle="fullScreen" id="evg-wo-XOP"/>
-                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
@@ -414,6 +411,7 @@ best walking route</string>
                     <tabBarItem key="tabBarItem" title="Home" id="eLe-g5-dur"/>
                     <connections>
                         <outlet property="myRoutes" destination="52c-iv-ndX" id="c0d-lb-oRk"/>
+                        <segue destination="BYZ-38-t0r" kind="presentation" identifier="showRoute" modalPresentationStyle="fullScreen" id="Jva-Hy-BVq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R9R-in-ZVr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
