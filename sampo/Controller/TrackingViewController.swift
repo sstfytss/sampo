@@ -8,6 +8,9 @@
 import UIKit
 import CoreLocation
 import MapKit
+import Firebase
+import FirebaseAuth
+import GoogleSignIn
 
 class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: MKMapView!
@@ -15,6 +18,10 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var completeLabel: UILabel!
     @IBOutlet weak var topView: UIView!
+    
+    var ref: DatabaseReference!
+    var databaseHandle: DatabaseHandle!
+    var currentUser: User = Auth.auth().currentUser!
     
     fileprivate let locationManager = CLLocationManager()
     var currentLocation: CLLocation!
@@ -25,6 +32,7 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        ref = Database.database().reference()
         mapView.delegate = self
         locationManager.delegate = self
         saveButton.isHidden = true
@@ -41,7 +49,7 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         locationManager.stopUpdatingHeading()
         locationManager.stopUpdatingLocation()
         let polyline = MKPolyline(coordinates: self.path, count: self.path.count)
-        setVisibleMapArea(polyline: polyline, edgeInsets: UIEdgeInsets(top: 40.0, left: 40.0, bottom: 40.0, right: 40.0),animated: true)
+        setVisibleMapArea(polyline: polyline, edgeInsets: UIEdgeInsets(top: 60.0, left: 40.0, bottom: 40.0, right: 40.0), animated: true)
         doneButton.isHidden = true
         saveButton.isHidden = false
         topView.isHidden = false
@@ -51,9 +59,36 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     @IBAction func save(){
         let alert = UIAlertController(title: "Saved", message: "Your Sampo Route Has Been Saved", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            let root = self.ref?.child("Routes")
+            let identifier = UUID().uuidString
+            let x = self.splitCoordsX()
+            let y = self.splitCoordsY()
+            root?.child(identifier).child("pathX").setValue(x)
+            root?.child(identifier).child("pathY").setValue(y)
+            root?.child(identifier).child("userid").setValue(self.currentUser.uid)
             self.dismiss(animated: true, completion: nil)
         }))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func splitCoordsX() -> [String]{
+        let pathArray = self.path
+        var xArray: [String] = []
+        for i in 0 ..< pathArray.count {
+            let x = pathArray[i].latitude
+            xArray.append(String(x))
+        }
+        return xArray
+    }
+    
+    func splitCoordsY() -> [String]{
+        let pathArray = self.path
+        var yArray: [String] = []
+        for i in 0 ..< pathArray.count {
+            let y = pathArray[i].latitude
+            yArray.append(String(y))
+        }
+        return yArray
     }
     
     func setupLocation(){

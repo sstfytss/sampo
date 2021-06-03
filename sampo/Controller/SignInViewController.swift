@@ -34,7 +34,6 @@ class SignInViewController: UIViewController, GIDSignInDelegate {
             }
         }
     }
-
     
     fileprivate func setupGoogleButtons(){
         //add google sign in button
