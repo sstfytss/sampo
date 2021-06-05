@@ -49,6 +49,10 @@ class SelectViewController: UIViewController, MKMapViewDelegate{
         locationManager.requestWhenInUseAuthorization()
     }
     
+    @IBAction func dismiss(){
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     func loadData(completion: @escaping ([Double]) -> ()){
         guard let rID = defaults.value(forKey: "routeSelected") as? String else { return }
         let path = self.ref.child("Routes").child(rID)
@@ -93,19 +97,6 @@ class SelectViewController: UIViewController, MKMapViewDelegate{
     func setVisibleMapArea(polyline: MKPolyline, edgeInsets: UIEdgeInsets, animated: Bool = false) {
         mapView.setVisibleMapRect(polyline.boundingMapRect, edgePadding: edgeInsets, animated: animated)
     }
-    
-//    @IBAction func showARController(_ sender: Any){
-//        arViewController = ARViewController()
-//        //1
-//        arViewController.dataSource = self
-//        //2
-////        arViewController.maxVisibleAnnotations = 30
-////        arViewController.headingSmoothingFactor = 0.05
-////        //3
-////        arViewController.setAnnotations(annotationArray)
-//            
-//        self.present(arViewController, animated: true, completion: nil)
-//    }
 
 }
 
@@ -156,20 +147,3 @@ extension SelectViewController: CLLocationManagerDelegate {
     
 }
 
-//extension SelectViewController: ARDataSource {
-//
-//  func ar(_ arViewController: ARViewController, viewForAnnotation: ARAnnotation) -> ARAnnotationView {
-//    let annotationView = AnnotationView()
-//    annotationView.annotation = viewForAnnotation
-//    annotationView.delegate = self
-//    annotationView.frame = CGRect(x: 0, y: 0, width: 150, height: 50)
-//    
-//    return annotationView
-//  }
-//}
-//
-//extension SelectViewController: AnnotationViewDelegate {
-//  func didTouch(annotationView: AnnotationView) {
-//    print("Tapped view for POI: \(annotationView.titleLabel?.text)")
-//  }
-//}
