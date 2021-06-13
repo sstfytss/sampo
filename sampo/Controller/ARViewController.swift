@@ -26,6 +26,7 @@ class ARViewController: UIViewController {
         sceneLocationView.run()
         view.addSubview(sceneLocationView)
         
+        
         loadData { (x) in
             print("xRec: \(x)")
             self.loadData2 { (y) in

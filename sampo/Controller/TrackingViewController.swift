@@ -11,13 +11,21 @@ import MapKit
 import Firebase
 import FirebaseAuth
 import GoogleSignIn
+import Cosmos
 
 class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var startButton: UIButton!
     @IBOutlet weak var doneButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var completeLabel: UILabel!
     @IBOutlet weak var topView: UIView!
+    
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var ratingLabel: UILabel!
+    @IBOutlet weak var nameField: UITextField!
+    @IBOutlet weak var ratingField: CosmosView!
+    @IBOutlet weak var stackView: UIStackView!
     
     var ref: DatabaseReference!
     var databaseHandle: DatabaseHandle!
@@ -29,15 +37,15 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     var path: [CLLocationCoordinate2D] = []
     let defaults = UserDefaults.standard
     var initial = true
+    
+    var bottomConstraint: NSLayoutConstraint!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         ref = Database.database().reference()
         mapView.delegate = self
         locationManager.delegate = self
-        saveButton.isHidden = true
-        topView.isHidden = true
-        completeLabel.isHidden = true
+        viewSetup()
         setupLocation()
     }
     
@@ -54,6 +62,7 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         saveButton.isHidden = false
         topView.isHidden = false
         completeLabel.isHidden = false
+        updateSetup()
     }
     
     @IBAction func save(){
@@ -71,6 +80,45 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
             self.dismiss(animated: true, completion: nil)
         }))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func viewSetup(){
+        //save button is hidden
+        saveButton.isHidden = true
+        
+        //frame to show when saving route is hidden
+        completeLabel.text = "Walking"
+        
+        //fields to enter name and rating are hidden
+        nameLabel.isHidden = true
+        ratingLabel.isHidden = true
+        nameField.isHidden = true
+        ratingField.isHidden = true
+        
+        //mapview
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.left, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.left, multiplier: 1, constant: 0).isActive = true
+        NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.right, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.right, multiplier: 1, constant: 0).isActive = true
+        NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 0).isActive = true
+        bottomConstraint = NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.doneButton, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: -20)
+        bottomConstraint.isActive = true
+    }
+    
+    func updateSetup(){
+        //frame to show when saving route is hidden
+        completeLabel.text = "Route Recorded"
+        
+        //fields to enter name and rating are unhidden
+        nameLabel.isHidden = false
+        ratingLabel.isHidden = false
+        nameField.isHidden = false
+        ratingField.isHidden = false
+        
+        //mapview
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.removeConstraint(bottomConstraint)
+        bottomConstraint.isActive = false
+        NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.stackView, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: -20).isActive = true
     }
     
     func splitCoordsX() -> [String]{
