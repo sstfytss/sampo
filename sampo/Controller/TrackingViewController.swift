@@ -13,9 +13,9 @@ import FirebaseAuth
 import GoogleSignIn
 import Cosmos
 
-class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate,  UITextFieldDelegate {
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var startButton: UIButton!
+    @IBOutlet weak var dataView: UIView!
     @IBOutlet weak var doneButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var completeLabel: UILabel!
@@ -44,13 +44,52 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         super.viewDidLoad()
         ref = Database.database().reference()
         mapView.delegate = self
+        nameField.delegate = self
         locationManager.delegate = self
         viewSetup()
         setupLocation()
+        NotificationCenter.default.addObserver(self, selector: #selector(TrackingViewController.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(TrackingViewController.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+//         let tap = UITapGestureRecognizer(target: self, action: #selector(TrackingViewController.dismissKeyboard))
+//
+//        view.addGestureRecognizer(tap)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        unsubscribeFromAllNotifications()
         self.path.removeAll()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        nameField.text = textField.text
+        return true
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        let keyboardFrame = keyboardSize.cgRectValue
+        
+        let y = self.stackView.frame.origin.y - keyboardFrame.height - self.stackView.frame.height
+        
+        print("keyboard: \(keyboardFrame.height), \(self.stackView.frame.origin.y), \(y)")
+        self.stackView.frame.origin.y -= y
+    }
+    
+//    @objc func dismissKeyboard() {
+//        nameField.resignFirstResponder()
+//        view.endEditing(true)
+//    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        let keyboardFrame = keyboardSize.cgRectValue
+        
+        let y = self.stackView.frame.origin.y - keyboardFrame.height - self.stackView.frame.height
+        self.stackView.frame.origin.y += y
     }
     
     @IBAction func done(){
@@ -80,6 +119,10 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
             self.dismiss(animated: true, completion: nil)
         }))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func unsubscribeFromAllNotifications() {
+        NotificationCenter.default.removeObserver(self)
     }
     
     func viewSetup(){
