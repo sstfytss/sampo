@@ -14,6 +14,7 @@ import FirebaseAuth
 
 class SelectViewController: UIViewController, MKMapViewDelegate{
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var nameLabel: UILabel!
 
     let defaults = UserDefaults.standard
     var ref: DatabaseReference!
@@ -36,10 +37,13 @@ class SelectViewController: UIViewController, MKMapViewDelegate{
             print("xRec: \(x)")
             self.loadData2 { (y) in
                 print("yRec: \(y)")
-                self.setData(x, y) { (coords) in
-                    let polyline = MKPolyline(coordinates: coords, count: coords.count)
-                    self.mapView.addOverlay(polyline)
-                    self.setVisibleMapArea(polyline: polyline, edgeInsets: UIEdgeInsets(top: 60.0, left: 40.0, bottom: 40.0, right: 40.0), animated: true)
+                self.loadData3 { name in
+                    self.nameLabel.text = name
+                    self.setData(x, y) { (coords) in
+                        let polyline = MKPolyline(coordinates: coords, count: coords.count)
+                        self.mapView.addOverlay(polyline)
+                        self.setVisibleMapArea(polyline: polyline, edgeInsets: UIEdgeInsets(top: 60.0, left: 40.0, bottom: 40.0, right: 40.0), animated: true)
+                    }
                 }
             }
         }
@@ -78,6 +82,15 @@ class SelectViewController: UIViewController, MKMapViewDelegate{
                 yArray.append(yDouble)
             }
             completion(yArray)
+        }
+    }
+    
+    func loadData3(completion: @escaping (String) -> ()){
+        guard let rID = defaults.value(forKey: "routeSelected") as? String else { return }
+        let path = self.ref.child("Routes").child(rID).child("name")
+        path.observeSingleEvent(of: .value) { (snap2) in
+            let name = snap2.value as! String
+            completion(name)
         }
     }
     

@@ -27,6 +27,7 @@
 		8F3F92CD266783310088666A /* TrackingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3F92CC266783310088666A /* TrackingViewController.swift */; };
 		8F3F92CF2667B0B30088666A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8F3F92CE2667B0B30088666A /* GoogleService-Info.plist */; };
 		8F3F92D12668B69D0088666A /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3F92D02668B69D0088666A /* SignInViewController.swift */; };
+		8F53886C267788DC006A8CF5 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F53886B267788DB006A8CF5 /* Route.swift */; };
 		F345DC0747744248D6537F23 /* Pods_sampo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B52FE007A0D225205EA80C7A /* Pods_sampo.framework */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +78,7 @@
 		8F3F92CC266783310088666A /* TrackingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingViewController.swift; sourceTree = "<group>"; };
 		8F3F92CE2667B0B30088666A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8F3F92D02668B69D0088666A /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
+		8F53886B267788DB006A8CF5 /* Route.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		95CC09632BC037BC8CA71E2D /* Pods-sampo-sampoUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sampo-sampoUITests.release.xcconfig"; path = "Target Support Files/Pods-sampo-sampoUITests/Pods-sampo-sampoUITests.release.xcconfig"; sourceTree = "<group>"; };
 		A944F1D63CC10DAB035D6520 /* Pods-sampo-sampoUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sampo-sampoUITests.debug.xcconfig"; path = "Target Support Files/Pods-sampo-sampoUITests/Pods-sampo-sampoUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		B52FE007A0D225205EA80C7A /* Pods_sampo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_sampo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -199,6 +201,7 @@
 			children = (
 				8F3B7104265F4CCB009BDBE5 /* Annotation.swift */,
 				8F3B7108265F589F009BDBE5 /* Place.swift */,
+				8F53886B267788DB006A8CF5 /* Route.swift */,
 				8F3B710B26636CFC009BDBE5 /* AnnotationView.swift */,
 			);
 			path = Model;
@@ -493,6 +496,7 @@
 				8F3B710C26636CFC009BDBE5 /* AnnotationView.swift in Sources */,
 				8F3F92CD266783310088666A /* TrackingViewController.swift in Sources */,
 				8F3A528F2659F82E00154CFC /* ViewController.swift in Sources */,
+				8F53886C267788DC006A8CF5 /* Route.swift in Sources */,
 				8F3A528B2659F82E00154CFC /* AppDelegate.swift in Sources */,
 				8F3B710A265F58CE009BDBE5 /* Place.swift in Sources */,
 				8F3A528D2659F82E00154CFC /* SceneDelegate.swift in Sources */,

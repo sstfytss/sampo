@@ -15,7 +15,6 @@ import Cosmos
 
 class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate,  UITextFieldDelegate {
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var dataView: UIView!
     @IBOutlet weak var doneButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var completeLabel: UILabel!
@@ -67,6 +66,10 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         return true
     }
     
+    @IBAction func back(){
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     @objc func keyboardWillShow(notification: NSNotification) {
         guard let userInfo = notification.userInfo else { return }
         guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
@@ -105,20 +108,33 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     }
     
     @IBAction func save(){
-        let alert = UIAlertController(title: "Saved", message: "Your Sampo Route Has Been Saved", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-            let root = self.ref?.child("Routes")
-            let p2 = self.ref?.child("Users")
-            let identifier = UUID().uuidString
-            let x = self.splitCoordsX()
-            let y = self.splitCoordsY()
-            root?.child(identifier).child("pathX").setValue(x)
-            root?.child(identifier).child("pathY").setValue(y)
-            root?.child(identifier).child("userid").setValue(self.currentUser.uid)
-            p2?.child(self.currentUser.uid).child("routes").child(identifier).child("name").setValue("name")
-            self.dismiss(animated: true, completion: nil)
-        }))
-        self.present(alert, animated: true, completion: nil)
+        if nameField.hasText == false {
+            let alert = UIAlertController(title: "Error", message: "Your sampo route has not been saved. Please enter a name for the route", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            }))
+            
+            self.present(alert, animated: true, completion: nil)
+        }else{
+            let alert = UIAlertController(title: "Saved", message: "Your Sampo Route Has Been Saved", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                guard let name = self.nameField.text else { return }
+                let rating = self.ratingField.rating
+                let root = self.ref?.child("Routes")
+                let p2 = self.ref?.child("Users")
+                let identifier = UUID().uuidString
+                let x = self.splitCoordsX()
+                let y = self.splitCoordsY()
+                root?.child(identifier).child("pathX").setValue(x)
+                root?.child(identifier).child("pathY").setValue(y)
+                root?.child(identifier).child("name").setValue(name)
+                root?.child(identifier).child("rating").setValue(rating)
+                root?.child(identifier).child("userid").setValue(self.currentUser.uid)
+                p2?.child(self.currentUser.uid).child("routes").child(identifier).child("name").setValue(name)
+                p2?.child(self.currentUser.uid).child("routes").child(identifier).child("rating").setValue(rating)
+                self.dismiss(animated: true, completion: nil)
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     
     func unsubscribeFromAllNotifications() {

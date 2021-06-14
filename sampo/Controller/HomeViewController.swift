@@ -15,6 +15,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     @IBOutlet var myRoutes: UICollectionView!
     
     var routes: [String] = []
+    var routeInfo: [Route] = []
     var ref: DatabaseReference!
     var databaseHandle: DatabaseHandle!
     var currentUser: User = Auth.auth().currentUser!
@@ -23,21 +24,37 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     override func viewDidLoad() {
         super.viewDidLoad()
         ref = Database.database().reference()
-        refresh()
+        initiate()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        self.myRoutes.delegate = self
-        self.myRoutes.dataSource = self
-        self.myRoutes.reloadData()
+        //refresh()
+    }
+    
+    func initiate(){
+        self.routes = []
+        loadData {
+            self.loadRoutes { (r) in
+                self.loadNames(r) {
+                    self.myRoutes.delegate = self
+                    self.myRoutes.dataSource = self
+                    self.myRoutes.reloadData()
+                    print("done")
+                }
+            }
+        }
     }
     
     func refresh(){
         self.routes = []
         loadData {
-            self.myRoutes.delegate = self
-            self.myRoutes.dataSource = self
-            self.myRoutes.reloadData()
+            self.loadRoutes { (r) in
+                print("r2:\(r)")
+                self.loadNames(r) {
+                    self.myRoutes.reloadData()
+                    print("done:\(self.routeInfo)")
+                }
+            }
         }
     }
     
@@ -47,19 +64,23 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         print("routes: \(routes.count)")
-        return routes.count
+        return self.routeInfo.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = myRoutes.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! MyRouteCell
         
-        cell.number.text = String(routes[indexPath.row])
+        cell.number.text = self.routeInfo[indexPath.row].name
+        cell.rating.rating = self.routeInfo[indexPath.row].rating ?? 0
+        print("rating: \(self.routeInfo[indexPath.row].rating), \(cell.rating.rating)")
+        cell.rating.center = self.view.center
+        
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let routeID = routes[indexPath.row]
+        let routeID = self.routeInfo[indexPath.row].id
         defaults.setValue(routeID, forKey: "routeSelected")
         self.performSegue(withIdentifier: "showRoute", sender: self)
     }
@@ -76,5 +97,44 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             print("child received: \(self.routes)")
             completion()
         }
+    }
+    
+    func loadRoutes(completion: @escaping ([String]) -> ()){
+        let path = self.ref.child("Users").child(self.currentUser.uid).child("routes")
+        var routes: [String] = []
+
+        path.observeSingleEvent(of: .value) { (r) in
+            for child in r.children.allObjects as! [DataSnapshot] {
+                let c = child.key
+                routes.append(c)
+            }
+            print("child received: \(self.routes)")
+            completion(routes)
+        }
+    }
+    
+    func loadNames(_ routes: [String], completion: @escaping () -> ()){
+        let path = self.ref.child("Users").child(self.currentUser.uid).child("routes")
+        self.routeInfo = []
+        //loadData {
+        for i in 0 ..< routes.count {
+            let r = routes[i]
+            path.child(r).child("name").observeSingleEvent(of: .value) { (r2) in
+                path.child(r).child("rating").observeSingleEvent(of: .value) { (r3) in
+                    guard let name = r2.value as? String else { return }
+                    
+                    let rating = r3.value as? Double
+                    print("success")
+                    self.routeInfo.append(Route(id: r, name: name, rating: rating))
+                    print("name: \(name), \(self.routeInfo)")
+                    
+                    if i == routes.count - 1{
+                        completion()
+                    }
+                }
+            }
+        }
+
+        //}
     }
 }

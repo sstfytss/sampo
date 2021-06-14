@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Cosmos
 
 class MyRouteCell: UICollectionViewCell {
     
     @IBOutlet weak var number: UILabel!
-    
+    @IBOutlet weak var rating: CosmosView!
 }
