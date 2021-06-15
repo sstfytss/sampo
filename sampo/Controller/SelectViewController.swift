@@ -15,6 +15,8 @@ import FirebaseAuth
 class SelectViewController: UIViewController, MKMapViewDelegate{
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var distanceLabel: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
 
     let defaults = UserDefaults.standard
     var ref: DatabaseReference!
@@ -39,10 +41,15 @@ class SelectViewController: UIViewController, MKMapViewDelegate{
                 print("yRec: \(y)")
                 self.loadData3 { name in
                     self.nameLabel.text = name
-                    self.setData(x, y) { (coords) in
-                        let polyline = MKPolyline(coordinates: coords, count: coords.count)
-                        self.mapView.addOverlay(polyline)
-                        self.setVisibleMapArea(polyline: polyline, edgeInsets: UIEdgeInsets(top: 60.0, left: 40.0, bottom: 40.0, right: 40.0), animated: true)
+                    self.loadData4 { time in
+                        self.loadData5 { distance in
+                            self.distanceLabel.text = "\(time), \(distance) km"
+                            self.setData(x, y) { (coords) in
+                                let polyline = MKPolyline(coordinates: coords, count: coords.count)
+                                self.mapView.addOverlay(polyline)
+                                self.setVisibleMapArea(polyline: polyline, edgeInsets: UIEdgeInsets(top: 60.0, left: 40.0, bottom: 40.0, right: 40.0), animated: true)
+                            }
+                        }
                     }
                 }
             }
@@ -92,6 +99,53 @@ class SelectViewController: UIViewController, MKMapViewDelegate{
             let name = snap2.value as! String
             completion(name)
         }
+    }
+    
+    func loadData4(completion: @escaping (String) -> ()){
+        guard let rID = defaults.value(forKey: "routeSelected") as? String else { return }
+        let path = self.ref.child("Routes").child(rID).child("time")
+        path.observeSingleEvent(of: .value) { (snap2) in
+            let t = snap2.value as! Int
+            let time = self.secChange(seconds: t)
+            let timeString = self.timeToString(hours: time.0, minutes: time.1, seconds: time.2)
+            completion(timeString)
+        }
+    }
+    
+    func loadData5(completion: @escaping (String) -> ()){
+        guard let rID = defaults.value(forKey: "routeSelected") as? String else { return }
+        let path = self.ref.child("Routes").child(rID).child("distance")
+        path.observeSingleEvent(of: .value) { (snap2) in
+            let d = snap2.value as! String
+            completion(d)
+        }
+    }
+    
+    
+    func secChange(seconds: Int) -> (Int, Int, Int){
+        return ((seconds/3600), ((seconds % 3600) / 60), ((seconds % 3600) % 60))
+    }
+    
+    func timeToString(hours: Int, minutes: Int, seconds: Int) -> String{
+        var timeString = ""
+        
+        if hours != 0 {
+            timeString += String(format: "%02d", hours)
+            timeString += " hrs "
+            timeString += String(format: "%02d", minutes)
+            timeString += " mins "
+            timeString += String(format: "%02d", seconds)
+            timeString += " secs"
+        }else if hours == 0 && minutes != 0{
+            timeString += String(format: "%02d", minutes)
+            timeString += " mins "
+            timeString += String(format: "%02d", seconds)
+            timeString += " secs"
+        }else if hours == 0 && minutes == 0{
+            timeString += String(format: "%02d", seconds)
+            timeString += " secs"
+        }
+        return timeString
     }
     
     func setData(_ x: [Double], _ y: [Double], completion: ([CLLocationCoordinate2D]) -> ()){

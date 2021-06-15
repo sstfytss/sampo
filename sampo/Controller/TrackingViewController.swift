@@ -36,6 +36,11 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     var databaseHandle: DatabaseHandle!
     var currentUser: User = Auth.auth().currentUser!
     var isWalking = false
+    var distance = 0.00
+    var timer: Timer = Timer()
+    var count: Int = 0
+    var counting: Bool = false
+    
     @IBOutlet weak var constraintView: UIView!
     var constraintArray: [NSLayoutConstraint] = []
     
@@ -43,6 +48,7 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     var currentLocation: CLLocation!
     
     var path: [CLLocationCoordinate2D] = []
+    var locs: [CLLocation] = []
     let defaults = UserDefaults.standard
     var initial = true
     
@@ -83,10 +89,38 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         startButton.isHidden = true
         locationManager.startUpdatingLocation()
         locationManager.startUpdatingHeading()
+        
+        counting = true
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerCounter), userInfo: nil, repeats: true)
+        
+    }
+    
+    @objc func timerCounter() -> Void{
+        count += 1
+        let time = secChange(seconds: count)
+        let timeString = timeToString(hours: time.0, minutes: time.1, seconds: time.2)
+        timeElapsed.text = timeString
+    }
+    
+    func secChange(seconds: Int) -> (Int, Int, Int){
+        return ((seconds/3600), ((seconds % 3600) / 60), ((seconds % 3600) % 60))
+    }
+    
+    func timeToString(hours: Int, minutes: Int, seconds: Int) -> String{
+        var timeString = ""
+        timeString += String(format: "%02d", hours)
+        timeString += " : "
+        timeString += String(format: "%02d", minutes)
+        timeString += " : "
+        timeString += String(format: "%02d", seconds)
+        return timeString
     }
     
     @IBAction func back(){
         isWalking = false
+        distance = 0.00
+        locationManager.stopUpdatingHeading()
+        locationManager.stopUpdatingLocation()
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -123,6 +157,8 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         topView.isHidden = false
         completeLabel.isHidden = false
         updateSetup()
+
+        self.timer.invalidate()
     }
     
     @IBAction func save(){
@@ -147,6 +183,13 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
                 root?.child(identifier).child("name").setValue(name)
                 root?.child(identifier).child("rating").setValue(rating)
                 root?.child(identifier).child("userid").setValue(self.currentUser.uid)
+                root?.child(identifier).child("time").setValue(self.count)
+                root?.child(identifier).child("distance").setValue(self.distanceWalked.text)
+                self.count = 0
+                self.distance = 0.0
+                self.timeElapsed.text = self.timeToString(hours: 0, minutes: 0, seconds: 0)
+                self.distanceWalked.text = String(0.00)
+                
                 p2?.child(self.currentUser.uid).child("routes").child(identifier).child("name").setValue(name)
                 p2?.child(self.currentUser.uid).child("routes").child(identifier).child("rating").setValue(rating)
                 self.dismiss(animated: true, completion: nil)
@@ -255,6 +298,13 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
 
                 //add updated location to coordinate array
                 path.append(CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
+                locs.append(CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
+                for location in self.locs {
+                    if self.locs.count > 0 {
+                        distance += location.distance(from: self.locs.last!)
+                    }
+                }
+                distanceWalked.text = String(format: "%.3f", distance/1000)
                 print("pathArray: \(path)")
                 updatePath()
             }
