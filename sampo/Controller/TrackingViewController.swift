@@ -19,6 +19,12 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var completeLabel: UILabel!
     @IBOutlet weak var topView: UIView!
+    @IBOutlet weak var startButton: UIButton!
+    
+    @IBOutlet weak var timeStack: UIStackView!
+    @IBOutlet weak var timeElapsed: UILabel!
+    @IBOutlet weak var distanceStack: UIStackView!
+    @IBOutlet weak var distanceWalked: UILabel!
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var ratingLabel: UILabel!
@@ -29,6 +35,9 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     var ref: DatabaseReference!
     var databaseHandle: DatabaseHandle!
     var currentUser: User = Auth.auth().currentUser!
+    var isWalking = false
+    @IBOutlet weak var constraintView: UIView!
+    var constraintArray: [NSLayoutConstraint] = []
     
     fileprivate let locationManager = CLLocationManager()
     var currentLocation: CLLocation!
@@ -50,9 +59,9 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         NotificationCenter.default.addObserver(self, selector: #selector(TrackingViewController.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(TrackingViewController.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-//         let tap = UITapGestureRecognizer(target: self, action: #selector(TrackingViewController.dismissKeyboard))
-//
-//        view.addGestureRecognizer(tap)
+         let tap = UITapGestureRecognizer(target: self, action: #selector(TrackingViewController.dismissKeyboard))
+
+        view.addGestureRecognizer(tap)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -66,7 +75,18 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         return true
     }
     
+    @IBAction func start(){
+        locationManager.stopUpdatingHeading()
+        locationManager.stopUpdatingLocation()
+        isWalking = true
+        doneButton.isHidden = false
+        startButton.isHidden = true
+        locationManager.startUpdatingLocation()
+        locationManager.startUpdatingHeading()
+    }
+    
     @IBAction func back(){
+        isWalking = false
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -74,25 +94,23 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         guard let userInfo = notification.userInfo else { return }
         guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
         let keyboardFrame = keyboardSize.cgRectValue
-        
-        let y = self.stackView.frame.origin.y - keyboardFrame.height - self.stackView.frame.height
-        
-        print("keyboard: \(keyboardFrame.height), \(self.stackView.frame.origin.y), \(y)")
-        self.stackView.frame.origin.y -= y
+
+        let constraint = self.constraintView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -(keyboardFrame.height))
+        constraint.isActive = true
+        constraintArray.append(constraint)
     }
     
-//    @objc func dismissKeyboard() {
-//        nameField.resignFirstResponder()
-//        view.endEditing(true)
-//    }
+    @objc func dismissKeyboard() {
+        nameField.resignFirstResponder()
+        view.endEditing(true)
+    }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
-        guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-        let keyboardFrame = keyboardSize.cgRectValue
-        
-        let y = self.stackView.frame.origin.y - keyboardFrame.height - self.stackView.frame.height
-        self.stackView.frame.origin.y += y
+        for c in constraintArray{
+            let cc = c
+            cc.isActive = false
+        }
+        constraintArray.removeAll()
     }
     
     @IBAction func done(){
@@ -144,6 +162,8 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     func viewSetup(){
         //save button is hidden
         saveButton.isHidden = true
+        doneButton.isHidden = true
+        constraintView.isHidden = true
         
         //frame to show when saving route is hidden
         completeLabel.text = "Walking"
@@ -159,7 +179,7 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.left, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.left, multiplier: 1, constant: 0).isActive = true
         NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.right, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.right, multiplier: 1, constant: 0).isActive = true
         NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 0).isActive = true
-        bottomConstraint = NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.doneButton, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: -20)
+        bottomConstraint = NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.timeStack, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: -20)
         bottomConstraint.isActive = true
     }
     
@@ -172,12 +192,13 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
         ratingLabel.isHidden = false
         nameField.isHidden = false
         ratingField.isHidden = false
+        constraintView.isHidden = false
         
         //mapview
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.removeConstraint(bottomConstraint)
         bottomConstraint.isActive = false
-        NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.stackView, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: -20).isActive = true
+        NSLayoutConstraint(item: self.mapView!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.constraintView, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: -20).isActive = true
     }
     
     func splitCoordsX() -> [String]{
@@ -212,28 +233,39 @@ class TrackingViewController: UIViewController, MKMapViewDelegate, CLLocationMan
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         //1
-        if locations.count > 0 {
-            let location = locations.last!
-            currentLocation = location
-            print("Accuracy: \(location.horizontalAccuracy), location: \(locations)")
+        
+        if isWalking == true {
             
-            if self.initial == true {
-                let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-                let region = MKCoordinateRegion(center: location.coordinate, span: span)
-                let annotation = Annotation(location: CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude), title: "Start")
-                self.initial = false
-                DispatchQueue.main.async {
-                    self.mapView.addAnnotation(annotation)
-                    self.mapView.region = region
+            if locations.count > 0 {
+                let location = locations.last!
+                currentLocation = location
+                print("Accuracy: \(location.horizontalAccuracy), location: \(locations)")
+                
+                if self.initial == true {
+                    let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+                    let region = MKCoordinateRegion(center: location.coordinate, span: span)
+                    let annotation = Annotation(location: CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude), title: "Start")
+                    self.initial = false
+                    DispatchQueue.main.async {
+                        self.mapView.addAnnotation(annotation)
+                        self.mapView.region = region
+                    }
+      
                 }
-  
-            }
 
-            //add updated location to coordinate array
-            path.append(CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
-            print("pathArray: \(path)")
-            updatePath()
+                //add updated location to coordinate array
+                path.append(CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
+                print("pathArray: \(path)")
+                updatePath()
+            }
+        }else{
+            if let location = locations.last{
+                let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+                self.mapView.setRegion(region, animated: true)
+            }
         }
+
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {

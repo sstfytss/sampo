@@ -107,6 +107,10 @@ class SelectViewController: UIViewController, MKMapViewDelegate{
         
     }
     
+    func getDistance(){
+        
+    }
+    
     func setVisibleMapArea(polyline: MKPolyline, edgeInsets: UIEdgeInsets, animated: Bool = false) {
         mapView.setVisibleMapRect(polyline.boundingMapRect, edgePadding: edgeInsets, animated: animated)
     }
